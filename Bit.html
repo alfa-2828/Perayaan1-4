@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perayaan 1/4M Bitt</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75));
+    background-size: cover;
+    background-position: center;
+    color: white;
+    position: relative;
+}
+
+/* ===== CAHAYA ===== */
+.light {
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at top,
+        rgba(0,255,255,0.25),
+        transparent 60%);
+    transform: translateX(-50%);
+    animation: pulse 10s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    from { opacity: 0.4; }
+    to { opacity: 0.8; }
+}
+
+/* ===== IKAN ===== */
+.ocean {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+.fish {
+    position: absolute;
+    font-size: 36px;
+    opacity: 0.85;
+    animation: swim 20s linear infinite;
+}
+
+.fish:nth-child(1) { top: 25%; }
+.fish:nth-child(2) { top: 50%; animation-direction: reverse; animation-duration: 24s; }
+.fish:nth-child(3) { top: 75%; animation-duration: 28s; }
+
+@keyframes swim {
+    from { left: -10%; }
+    to { left: 110%; }
+}
+
+/* ===== SLIDE ===== */
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: 0.8s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide.prev {
+    transform: translateX(-100%);
+}
+
+/* ===== GAMBAR ===== */
+.hero-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 3px solid rgba(0,255,255,0.6);
+    box-shadow: 0 0 20px rgba(0,255,255,0.4);
+}
+
+.frame {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.frame img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 3px solid rgba(0,255,255,0.6);
+    box-shadow:
+        0 0 10px rgba(0,255,255,0.4),
+        inset 0 0 10px rgba(255,255,255,0.2);
+}
+
+/* ===== TEKS ===== */
+h1 {
+    font-size: 2em;
+    margin-bottom: 12px;
+}
+
+p {
+    font-size: 1.1em;
+    max-width: 600px;
+}
+
+/* ===== BUTTON ===== */
+.nav {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    padding: 12px 22px;
+    border-radius: 25px;
+    border: none;
+    background: #00e5ff;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4df3ff;
+}
+
+/* ===== KONTROL MUSIK ===== */
+.music-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.music-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.8);
+    border: 2px solid white;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.music-btn:hover {
+    background: #4df3ff;
+    transform: scale(1.1);
+}
+
+/* ===== BONUS BADGE ===== */
+.bonus-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.2em;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ===== VIDEO BACKGROUND ===== */
+.video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.video-bg.active {
+    opacity: 1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="light"></div>
+
+<div class="ocean">
+    <div class="fish">🐟</div>
+    <div class="fish">🐠</div>
+    <div class="fish">🐡</div>
+</div>
+
+<!-- VIDEO BACKGROUND untuk Slide 5 -->
+<video id="videoBg" class="video-bg" autoplay loop muted playsinline>
+    <source src="img/bonus.mp4" type="video/mp4">
+</video>
+
+<!-- KONTROL MUSIK -->
+<div class="music-control">
+    <button class="music-btn" onclick="toggleMusic()">🎵</button>
+</div>
+
+<!-- AUDIO PLAYER (tersembunyi) -->
+<audio id="bgMusic1" loop><source src="img/slide1.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic2" loop><source src="img/slide2.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic3" loop><source src="img/slide3.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic4" loop><source src="img/slide4.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic5" loop><source src="img/slide5.mp3" type="audio/mpeg"></audio>
+
+<!-- SLIDE 1 - Background: bg1.png -->
+<div class="slide active" data-bg="img/bg1.png" data-music="bgMusic1">
+    <!-- GAMBAR ATAS -->
+    <img src="img/hero.png" class="hero-img" alt="Gambar Utama">
+
+    <h1>🌊 Selamat Datang Abit Di Sirkel 1/4M 🌊</h1>
+    <p>Selamat Abit!
+Welcome to Sirkel 1/4M🚀
+Next level unlocked!
+Kami segenap sobat "Mancuih" Turut senang dan gembira dalam kelulusan mu 1/4,Kali </p>
+
+    <div class="nav">
+        <button onclick="nextSlide()">Next ➜</button>
+    </div>
+</div>
+
+<!-- SLIDE 2 - Background: bg2.png -->
+<div class="slide" data-bg="img/bg2.png" data-music="bgMusic2">
+    <!-- 2 GAMBAR DENGAN BINGKAI -->
+    <div class="frame">
+        <img src="img/foto1.png" alt="Secret 1">
+        <img src="img/foto2.png" alt="Secret 2">
+    </div>
+
+    <h1>📸 Secret 📸</h1>
+    <p>Dua ikan yang akhirnya naik setelah berbulan-bulan lamanya dan segala jeri payah dari seorang Abitt .</p>
+
+    <div class="nav">
+        <button onclick="prevSlide()">⟵ Back</button>
+        <button onclick="nextSlide()">Next ➜</button>
+    </div>
+</div>
+
+<!-- SLIDE 3 - Background: bg3.png -->
+<div class="slide" data-bg="img/bg3.png" data-music="bgMusic3">
+   <h1>💙 Awal Bukan Akhir 💙</h1>
+   <p>Sama seperti sobat sobat terdahulu mu bit, dengan lulusnya 1/4M
+bukan berarti selesai, karena masih banyak secret-secret lain yang 
+yang harus kau tangkap dengan ELEMENT ROD baru mu !!.</p>
+
+    <div class="nav">
+        <button onclick="prevSlide()">⟵ Back</button>
+        <button onclick="nextSlide()">Next ➜</button>
+    </div>
+</div>
+
+<!-- SLIDE 4 - Background: bg4.png -->
+<div class="slide" data-bg="img/bg4.png" data-music="bgMusic4">
+    <h1>✨ Hati Kecil Dudung ✨</h1>
+    <p>pertama tama selamat untuk abit udah lulus element + dapet el maja maxtonn,gw sebagai temen judge lu sangat bangga sama hasil lu sendiri ya mungkin gw ngledek lu mulu tpi itu maksud gw biar temen gw ini makin semangat buat nunjukin kalo diri lu bisa dan yg terakhir jangan sombong bitt tetaplah rendah hatii okeee,#dudung baik.</p>
+
+    <div class="nav">
+        <button onclick="prevSlide()">⟵ Back</button>
+        <button onclick="nextSlide()">Next ➜</button>
+    </div>
+</div>
+
+<!-- SLIDE 5 - BONUS PAGE - dengan Video Background -->
+<div class="slide" data-video="true" data-music="bgMusic5">
+    <div class="bonus-badge">🎁 BONUS 🎁</div>
+    
+
+
+<script>
+var current = 0;
+var slides = document.getElementsByClassName("slide");
+var currentMusic = null;
+var isMusicPlaying = false;
+var videoBg = document.getElementById("videoBg");
+
+function showSlide(i) {
+    for (let x = 0; x < slides.length; x++) {
+        slides[x].classList.remove("active", "prev");
+        if (x < i) slides[x].classList.add("prev");
+    }
+    slides[i].classList.add("active");
+    
+    // Cek apakah slide ini menggunakan video background
+    var isVideoSlide = slides[i].getAttribute("data-video") === "true";
+    
+    if (isVideoSlide) {
+        // Tampilkan video background
+        videoBg.classList.add("active");
+        videoBg.play();
+    } else {
+        // Sembunyikan video background dan ganti dengan gambar
+        videoBg.classList.remove("active");
+        videoBg.pause();
+        
+        var bgUrl = slides[i].getAttribute("data-bg");
+        if (bgUrl) {
+            document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), url(${bgUrl})`;
+        }
+    }
+    
+    // Ganti musik sesuai slide
+    switchMusic(i);
+}
+
+function switchMusic(slideIndex) {
+    var musicId = slides[slideIndex].getAttribute("data-music");
+    var newMusic = document.getElementById(musicId);
+    
+    // Jika musik berbeda dan musik sedang diputar
+    if (currentMusic && currentMusic !== newMusic) {
+        currentMusic.pause();
+        currentMusic.currentTime = 0;
+    }
+    
+    currentMusic = newMusic;
+    
+    // Jika musik sedang aktif/playing, putar musik baru
+    if (isMusicPlaying && currentMusic) {
+        currentMusic.play();
+    }
+}
+
+function toggleMusic() {
+    if (!currentMusic) {
+        currentMusic = document.getElementById(slides[current].getAttribute("data-music"));
+    }
+    
+    if (currentMusic.paused) {
+        currentMusic.play();
+        isMusicPlaying = true;
+        document.querySelector(".music-btn").textContent = "🔊";
+    } else {
+        currentMusic.pause();
+        isMusicPlaying = false;
+        document.querySelector(".music-btn").textContent = "🔇";
+    }
+}
+
+function nextSlide() {
+    if (current < slides.length - 1) {
+        current++;
+        showSlide(current);
+    }
+}
+
+function prevSlide() {
+    if (current > 0) {
+        current--;
+        showSlide(current);
+    }
+}
+
+function restart() {
+    current = 0;
+    showSlide(current);
+}
+
+// Load background slide pertama saat halaman dibuka
+window.onload = function() {
+    showSlide(0);
+    currentMusic = document.getElementById("bgMusic1");
+}
+
+/* SWIPE MOBILE */
+let startX = 0;
+document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+document.addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+    if (endX < startX - 50) nextSlide();
+    if (endX > startX + 50) prevSlide();
+});
+</script>
+
+</body>
+</html>
